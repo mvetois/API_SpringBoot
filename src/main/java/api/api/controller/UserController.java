@@ -1,10 +1,10 @@
 package api.api.controller;
 
-import api.api.persistance.UserEntity;
-import api.api.persistance.UserRepository;
+import api.api.persistance.entity.UserEntity;
+import api.api.persistance.repository.UserRepository;
 import api.api.request.UserRequest;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -16,15 +16,15 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.Optional;
 
 @RestController
+@RequestMapping("/api/user")
 public class UserController {
     UserRepository userRepository;
 
-    @Autowired
     public UserController(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
 
-    @GetMapping("/user")
+    @GetMapping()
     public ResponseEntity<String> findById(@RequestParam Integer id) {
         Optional<UserEntity> user = userRepository.findById(id);
         if (user.isEmpty()) {
@@ -33,19 +33,19 @@ public class UserController {
         return (ResponseEntity.ok(user.get().toString()));
     }
 
-    @GetMapping("/users")
+    @GetMapping("/all")
     public String findAll() {
         return (userRepository.findAll().toString());
     }
 
-    @PostMapping("/user")
+    @PostMapping()
     public ResponseEntity<String> create(@RequestBody UserRequest userRequest) {
         UserEntity user = new UserEntity(userRequest.getName(), userRequest.getEmail());
         userRepository.save(user);
         return (ResponseEntity.ok(user.toString()));
     }
 
-    @PutMapping("/user")
+    @PutMapping()
     public ResponseEntity<String> update(@RequestParam Integer id, @RequestBody UserRequest userRequest) {
         Optional<UserEntity> user = userRepository.findById(id);
         if (user.isEmpty()) {
@@ -56,7 +56,7 @@ public class UserController {
         return (ResponseEntity.ok(user.get().toString()));
     }
 
-    @DeleteMapping("/user")
+    @DeleteMapping()
     public ResponseEntity<String> delete(@RequestParam Integer id) {
         Optional<UserEntity> user = userRepository.findById(id);
         if (user.isEmpty()) {
